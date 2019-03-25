@@ -1,11 +1,7 @@
 # Darren Hallinan - G00342845
 # Graph Theory Project 2019
 
-def shuntingYard(input):
-    infix = ''
-    # the user's input will be treated as an infix expression
-    input = infix
-
+def shuntingYard(infix):
     operators = {'*': 30, '.': 20, '|': 10}
 
     postfix, stack = ' ', ' '
@@ -37,4 +33,4 @@ def shuntingYard(input):
     
     return postfix
 
-print(shuntingYard("(a.b)|(c*.d)"))
+# print(shuntingYard("(a.b)|(c*.d)")) # shunting yard algorithm test
