@@ -4,12 +4,13 @@
 class state:
     label, edge1, edge2 = None, None, None
 
-class nfa:
-    intial, accept = None, None
+class NFA:
+    initial, accept = None, None
 
     def __init__(self, initial, accept):
-      self.intial, self.accept = initial, accept
+      self.initial, self.accept = initial, accept
 
+# convert infix notation to postfix
 def shunt(infix):
     operators = {'*': 30, '+': 30, '?': 30, '.': 20, '|': 10}
     postfix, stack = ' ', ' '
@@ -39,7 +40,7 @@ def shunt(infix):
         stack = stack[:-1]   
     return postfix
 
-
+# regular expression compiler
 def compile(postfix):
     nfaStack = []
 
@@ -49,29 +50,29 @@ def compile(postfix):
             nfa = nfaStack.pop()
             initial, accept = state(), state()
 
-            initial.edge1, nfa.accept.edge1 = nfa.intial
+            initial.edge1, nfa.accept.edge1 = nfa.initial, nfa.initial
             initial.edge2, nfa.accept.edge2 = accept, accept
-            nfaStack.append(nfa(initial, accept))
+            nfaStack.append(NFA(initial, accept))
         # merge the two automata by linking 1's accept to 2's initial states
         elif c == '.': 
             nfa2, nfa1 = nfaStack.pop(), nfaStack.pop()
-            nfa1.accept.edge1 = nfa2.intial
-            nfaStack.append(nfa1.intial, nfa2.accept)       
+            nfa1.accept.edge1 = nfa2.initial
+            nfaStack.append(NFA(nfa1.initial, nfa2.accept))       
         # create new initial and accept states and use them to link nfa1 and nfa2
         elif c == '|':
             nfa2, nfa1 = nfaStack.pop(), nfaStack.pop()
             initial, accept = state(), state()
-            initial.edge1, initial.edge2 = nfa1.intial, nfa2.intial
+            initial.edge1, initial.edge2 = nfa1.initial, nfa2.initial
             # both old accept states now point to our new accept state
             nfa1.accept.edge1, nfa2.accept.edge1 = accept, accept
-            nfaStack.append(nfa(initial, accept))      
+            nfaStack.append(NFA(initial, accept))      
         # creates new states and edges; labels each edge with what the current non-special character is
         else:
             initial, accept = state(), state()
             initial.label = c
             initial.edge1 = accept
             # create instance of class nfa()
-            nfaStack.append(nfa(initial, accept))   
+            nfaStack.append(NFA(initial, accept))   
     # should only ever have one nfa in the stack
     return nfaStack.pop()
 
@@ -93,7 +94,7 @@ def match(infix, string):
 
     currentS, nextS = set(), set()
     # add initial state to the working set
-    currentS |= helper(nfa.intial)
+    currentS |= helper(nfa.initial)
 
     for s in string:
         for c in currentS:
@@ -103,3 +104,11 @@ def match(infix, string):
         nextS = set()
 
     return(nfa.accept in currentS)
+
+# Test to make sure eveything works together
+testInfixes = ["a.b.c", "a.(b|d).c*", "(a.(b|d))*", "a.(b.b)*.c"]
+testStrings = ["", "abc", "abbc", "abba", "abcc", "abad", "abbbc"]
+
+for i in testInfixes:
+    for s in testStrings:
+        print(match(i, s), i, s)
