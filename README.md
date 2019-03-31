@@ -33,4 +33,13 @@ Unfortunately, the project altogether didn't work. I feel like the logic is soun
 References:
 
 http://www.oxfordmathcenter.com/drupal7/node/628
+
+http://interactivepython.org/runestone/static/pythonds/BasicDS/InfixPrefixandPostfixExpressions.html
+
 https://inventwithpython.com/blog/2012/07/09/16-common-python-runtime-errors-beginners-find/
+
+http://www.cs.may.ie/staff/jpower/Courses/Previous/parsing/node5.html
+
+http://cse.iitkgp.ac.in/~bivasm/notes/scribe/11CS10055.pdf
+
+https://www.cs.york.ac.uk/fp/lsa/lectures/REToC.pdf
