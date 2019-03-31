@@ -1,6 +1,6 @@
 ####################################
-Third Year Graph Theory Project 2019
-####################################
+/nThird Year Graph Theory Project 2019
+/n####################################
 
 This is a simple program that generates a non-deterministic finite automaton(NFA) from a regular expression. It then uses that NFA to query the regular expression against text to check if there's a match.
 
