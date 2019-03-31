@@ -41,23 +41,25 @@ def shunt(infix):
     return postfix
 
 # regular expression compiler
-def compile(postfix):
+def thompson(postfix):
     nfaStack = []
 
     for c in postfix:
         # join the initial and accept states together to create a loop for your characters
         if c == '*':
-            nfa = nfaStack.pop()
+            nfa1 = nfaStack.pop()
             initial, accept = state(), state()
 
-            initial.edge1, nfa.accept.edge1 = nfa.initial, nfa.initial
-            initial.edge2, nfa.accept.edge2 = accept, accept
-            nfaStack.append(NFA(initial, accept))
+            initial.edge1, nfa1.accept.edge1 = nfa1.initial, nfa1.initial
+            initial.edge2, nfa1.accept.edge2 = accept, accept
+            newNfa = NFA(initial, accept)
+            nfaStack.append(newNfa)
         # merge the two automata by linking 1's accept to 2's initial states
         elif c == '.': 
             nfa2, nfa1 = nfaStack.pop(), nfaStack.pop()
             nfa1.accept.edge1 = nfa2.initial
-            nfaStack.append(NFA(nfa1.initial, nfa2.accept))       
+            newNfa = NFA(nfa1.initial, nfa2.accept)
+            nfaStack.append(newNfa)       
         # create new initial and accept states and use them to link nfa1 and nfa2
         elif c == '|':
             nfa2, nfa1 = nfaStack.pop(), nfaStack.pop()
@@ -65,14 +67,16 @@ def compile(postfix):
             initial.edge1, initial.edge2 = nfa1.initial, nfa2.initial
             # both old accept states now point to our new accept state
             nfa1.accept.edge1, nfa2.accept.edge1 = accept, accept
-            nfaStack.append(NFA(initial, accept))      
+            newNfa = NFA(initial, accept)
+            nfaStack.append(newNfa)        
         # creates new states and edges; labels each edge with what the current non-special character is
         else:
             initial, accept = state(), state()
             initial.label = c
             initial.edge1 = accept
             # create instance of class nfa()
-            nfaStack.append(NFA(initial, accept))   
+            newNfa = NFA(initial, accept)
+            nfaStack.append(newNfa)    
     # should only ever have one nfa in the stack
     return nfaStack.pop()
 
@@ -90,7 +94,7 @@ def helper(state):
 def match(infix, string):
     # shunt and compile the expression to prepare it for matching
     postfix = shunt(infix)
-    nfa = compile(postfix)
+    nfa = thompson(postfix)
 
     currentS, nextS = set(), set()
     # add initial state to the working set
